@@ -13,9 +13,10 @@ file
 stmt
     : ( assignmentStmt
       | msgBoxStmt
-      | declarationStmt)? WS?
+      | declarationStmt
+      | forLoopStmt)? WS?
     ;
-       
+
 assignmentStmt
     : ID WS? '=' WS? expr
     | arraySubscript WS? '=' WS? expr
@@ -31,6 +32,12 @@ msgBoxStmt
 
 declarationStmt
     : DIM WS? ID WS? AS WS? typeName (WS? ',' WS? ID WS? AS WS? typeName)*
+    ;
+
+forLoopStmt
+    : FOR WS? ID WS? '=' WS? expr WS? TO WS? expr (WS? STEP WS? expr)? NEWLINE
+      (stmt NEWLINE)*
+      NEXT
     ;
 
 typeName
@@ -116,8 +123,12 @@ MSGBOX : M S G B O X;
 
 DIM : D I M;
 AS : A S;
-
 COMMA : ',';
+
+FOR : F O R;
+TO : T O;
+STEP : S T E P;
+NEXT : N E X T;
 
 TYPE_SINGLE : S I N G L E;
 TYPE_INTEGER : I N T E G E R;

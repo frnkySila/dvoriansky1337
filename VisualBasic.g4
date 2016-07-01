@@ -44,6 +44,7 @@ typeName
     : TYPE_SINGLE
     | TYPE_INTEGER
     | TYPE_DECIMAL
+    | TYPE_STRING
     ;
 
 primaryExpr
@@ -52,6 +53,7 @@ primaryExpr
     | ID
     | INTEGER_CONSTANT
     | FLOATING_POINT_CONSTANT
+    | STRING_CONSTANT
     ;
 
 exponentiationExpr
@@ -101,6 +103,9 @@ WS : [' '\t]+;
 OPEN_BRACKET : '[';
 CLOSE_BRACKET : ']';
 
+STRING_CONSTANT : '"' (~["])* '"';
+PAREN : '"';
+
 INTEGER_CONSTANT : MINUS? DIGIT+;
 MINUS : '-';
 
@@ -133,6 +138,7 @@ NEXT : N E X T;
 TYPE_SINGLE : S I N G L E;
 TYPE_INTEGER : I N T E G E R;
 TYPE_DECIMAL : D E C I M A L;
+TYPE_STRING : S T R I N G;
 
 ID : NONDIGIT (NONDIGIT | DIGIT)*;
 NONDIGIT : [a-zA-Z_];

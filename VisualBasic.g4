@@ -7,14 +7,19 @@
 grammar VisualBasic;
 
 file
-    : (stmt NEWLINE)* stmt? EOF
+    : statements EOF
+    ;
+
+statements
+    : (WS? stmt NEWLINE)* WS? stmt?
     ;
 
 stmt
     : ( assignmentStmt
       | msgBoxStmt
       | declarationStmt
-      | forLoopStmt)? WS?
+      | forLoopStmt
+      | exitStmt)? WS?
     ;
 
 assignmentStmt
@@ -30,13 +35,17 @@ msgBoxStmt
     : MSGBOX WS expr
     ;
 
+exitStmt
+    : EXIT WS FOR
+    ;
+
 declarationStmt
     : DIM WS? ID WS? AS WS? typeName (WS? ',' WS? ID WS? AS WS? typeName)*
     ;
 
 forLoopStmt
     : FOR WS? ID WS? '=' WS? expr WS? TO WS? expr (WS? STEP WS? expr)? NEWLINE
-      (stmt NEWLINE)*
+      statements NEWLINE
       NEXT
     ;
 
@@ -134,6 +143,7 @@ FOR : F O R;
 TO : T O;
 STEP : S T E P;
 NEXT : N E X T;
+EXIT : E X I T;
 
 TYPE_SINGLE : S I N G L E;
 TYPE_INTEGER : I N T E G E R;

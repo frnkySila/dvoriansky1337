@@ -28,11 +28,6 @@ stmt
 
 assignmentStmt
     : ID WS? '=' WS? expr
-    | arraySubscript WS? '=' WS? expr
-    ;
-      
-arraySubscript
-    : ID OPEN_BRACKET INTEGER_CONSTANT CLOSE_BRACKET
     ;
 
 msgBoxStmt
@@ -62,7 +57,6 @@ typeName
 
 primaryExpr
     : '(' WS? expr WS? ')'
-    | arraySubscript
     | ID
     | INTEGER_CONSTANT
     | FLOATING_POINT_CONSTANT

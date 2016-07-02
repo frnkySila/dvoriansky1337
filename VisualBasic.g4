@@ -6,6 +6,10 @@
 
 grammar VisualBasic;
 
+options {
+    language = CSharp;
+}
+
 file
     : statements EOF
     ;

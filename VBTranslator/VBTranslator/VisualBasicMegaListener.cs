@@ -64,7 +64,7 @@ namespace VBTranslator
 					typeDeclCS = "int {0} = 0;";
 					break;
 				case "single":
-					typeDeclCS = "float {0} = 0.0;";
+					typeDeclCS = "float {0} = 0.0f;";
 					break;
 				case "decimal":
 					typeDeclCS = "decimal {0} = 0m;";

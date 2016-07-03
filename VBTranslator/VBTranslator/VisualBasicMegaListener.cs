@@ -39,9 +39,9 @@ namespace VBTranslator
 		public override void ExitFile(VisualBasicParser.FileContext context)
 		{
 			Unindent();
-			OutLine(")");
+			OutLine("}");
 			Unindent();
-			OutLine(")");
+			OutLine("}");
 		}
 
 		public override void EnterDeclarationStmt(VisualBasicParser.DeclarationStmtContext context)
@@ -265,6 +265,8 @@ namespace VBTranslator
 			Out(String.Format("for({0}; {1}; {2})", initStmtCS, testStmtCS, incrementStmtCS));
 
 			OutLine(" {");
+			Indent();
+			CurrentLoopDepth += 1;
 
 			if(context.STEP() != null) {
 				IgnoreNextExpressions += 3;
@@ -272,14 +274,12 @@ namespace VBTranslator
 			else {
 				IgnoreNextExpressions += 2;
 			}
-
-			CurrentLoopDepth += 1;
 		}
 
 		public override void ExitForLoopStmt(VisualBasicParser.ForLoopStmtContext context)
 		{
+			Unindent();
 			OutLine("}");
-
 			CurrentLoopDepth -= 1;
 		}
 
@@ -322,13 +322,29 @@ namespace VBTranslator
 			CurrentIndentLevel -= 4;
 		}
 
+		string CurrentIndent()
+		{
+			return new string(' ', CurrentIndentLevel);
+		}
+
 		void OutLine(string s)
 		{
+			if(AtLineBeginning) {
+				OutputWriter.Write(CurrentIndent());
+			}
+
 			OutputWriter.Write(s + "\n");
+
+			AtLineBeginning = true;
 		}
 
 		void Out(string s)
 		{
+			if(AtLineBeginning) {
+				OutputWriter.Write(CurrentIndent());
+				AtLineBeginning = false;
+			}
+
 			OutputWriter.Write(s);
 		}
 	}

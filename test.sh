@@ -7,4 +7,4 @@ do
 	exe_file="${in_file%.*}".exe
 	mono ./test/compiled/$exe_file
 done
-# rm -rf ./test/compiled
+# rm -f ./test/compiled/*.cs ./test/compiled/*.exe

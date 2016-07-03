@@ -19,7 +19,39 @@ namespace VBTranslator
 
 		public override void EnterFile(VisualBasicParser.FileContext context)
 		{
-			OutLine(context.GetText());
+			OutLine("using System;");
+			OutLine("using System.IO;");
+			OutLine("using System.Windows.Forms;");
+			OutLine("");
+		}
+
+		public override void EnterDeclarationStmt(VisualBasicParser.DeclarationStmtContext context)
+		{
+			for(int i = 0; i < context.typeName().Length; i++) {
+				string typeNameCS = "";
+
+				string typeName = context.typeName()[i].GetText();
+
+				switch(typeName.ToLower()) {
+				case "integer":
+					typeNameCS = "int";
+					break;
+				case "single":
+					typeNameCS = "float";
+					break;
+				case "decimal":
+					typeNameCS = "decimal";
+					break;
+				case "string":
+					typeNameCS = "string";
+					break;
+				default:
+					// This never happens because parser doesn't allow any types not mentioned
+					break;
+				}
+
+				OutLine(typeNameCS + " " + context.ID()[i].GetText() + ";");
+			}
 		}
 
 		void OutLine(string s)

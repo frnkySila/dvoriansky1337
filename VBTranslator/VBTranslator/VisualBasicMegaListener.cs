@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace VBTranslator
 {
@@ -15,6 +16,7 @@ namespace VBTranslator
 		bool AtLineBeginning = true;
 		int CurrentIndentLevel = 0;
 
+		Dictionary<string, string> DeclaredVars = new Dictionary<string, string>();
 
 		public VisualBasicMegaListener(string outputFilename)
 		{
@@ -47,29 +49,37 @@ namespace VBTranslator
 		public override void EnterDeclarationStmt(VisualBasicParser.DeclarationStmtContext context)
 		{
 			for(int i = 0; i < context.typeName().Length; i++) {
-				string typeNameCS = "";
+				string varId = context.ID()[i].GetText();
+
+				if(DeclaredVars.ContainsKey(varId)) {
+					PrintErrorAndExit(1002, String.Format("Variable {0} was already declared", varId));
+				}
+
+				string typeDeclCS = "";
 
 				string typeName = context.typeName()[i].GetText();
 
 				switch(typeName.ToLower()) {
 				case "integer":
-					typeNameCS = "int";
+					typeDeclCS = "int {0} = 0;";
 					break;
 				case "single":
-					typeNameCS = "float";
+					typeDeclCS = "float {0} = 0.0;";
 					break;
 				case "decimal":
-					typeNameCS = "decimal";
+					typeDeclCS = "decimal {0} = 0m;";
 					break;
 				case "string":
-					typeNameCS = "string";
+					typeDeclCS = "string {0} = \"\";";
 					break;
 				default:
 					// This never happens because parser doesn't allow any types not mentioned
 					break;
 				}
 
-				OutLine(typeNameCS + " " + context.ID()[i].GetText() + ";");
+				DeclaredVars[varId] = typeName.ToLower();
+
+				OutLine(String.Format(typeDeclCS, varId));
 			}
 		}
 
@@ -250,8 +260,11 @@ namespace VBTranslator
 		{
 			string varName = context.ID().GetText();
 
-			string initStmtCS = String.Format("int {0} = {1}", varName, PrintExpression(context.expr()[0]));
-			string testStmtCS = String.Format("{0} < {1}", varName, PrintExpression(context.expr()[1]));
+			string initStmtCS = String.Format("{0}{1} = {2}",
+				DeclaredVars.ContainsKey(varName) ? "" : "int ",
+				varName,
+				PrintExpression(context.expr()[0]));
+			string testStmtCS = String.Format("{0} <= {1}", varName, PrintExpression(context.expr()[1]));
 
 			string incrementStmtCS;
 
@@ -303,7 +316,7 @@ namespace VBTranslator
 
 		void PrintErrorAndExit(int error_code, string message)
 		{
-			Console.WriteLine(String.Format("Error %s:", error_code));
+			Console.Write(String.Format("Error VB{0}:", error_code));
 			Console.WriteLine("\t" + message);
 
 			OutputWriter.Close();

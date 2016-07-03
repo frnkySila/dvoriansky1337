@@ -11,6 +11,11 @@ namespace VBTranslator
 	{
 		public static void Main(string[] args)
 		{
+			if(args.Length != 2) {
+				Console.WriteLine("usage: VBTranslator.exe [input file] [output file]");
+				Environment.Exit(1);
+			}
+
 			string input = File.ReadAllText(args[0]);
 
 			var ms = new MemoryStream(Encoding.UTF8.GetBytes(input));
@@ -24,7 +29,7 @@ namespace VBTranslator
 
 			var pastwk = new ParseTreeWalker();
 
-			pastwk.Walk(new VisualBasicMegaListener(), tree);
+			pastwk.Walk(new VisualBasicMegaListener(args[1]), tree);
 		}
 	}
 }

@@ -56,7 +56,7 @@ typeName
     ;
 
 primaryExpr
-    : '(' WS? expr WS? ')'
+    : '(' WS? concatExpr WS? ')'
     | ID
     | INTEGER_CONSTANT
     | FLOATING_POINT_CONSTANT
@@ -75,8 +75,7 @@ negationExpr
 
 multiplicativeExpr
     : negationExpr
-    | multiplicativeExpr WS? '*' WS? negationExpr
-    | multiplicativeExpr WS? '/' WS? negationExpr
+    | multiplicativeExpr WS? ('*' | '/') WS? negationExpr
     ;
 
 integerDivExpr
@@ -91,8 +90,7 @@ moduloExpr
 
 additiveExpr
     : moduloExpr
-    | additiveExpr WS? '+' WS? moduloExpr
-    | additiveExpr WS? '-' WS? moduloExpr
+    | additiveExpr WS? ('+' | '-') WS? moduloExpr
     ;
 
 concatExpr
